@@ -1,0 +1,84 @@
+﻿@model List<RecordURL>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Index</title>
+    <style>
+		th, td {
+			border: 1px solid;
+		}
+	</style>
+</head>
+<body>
+<p>@Html.ActionLink("Create New", "CreateRecord")</p>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>CreateAt</th>
+        <th>Short URL</th>
+        <th>Original URL</th>
+        <th>CountJump</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+            <td>
+                <a href="" onclick="counterJump(@item.Id)" id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.ShortUrl)
+                </a>
+            </td>
+            <td>
+                <a href="@Html.DisplayFor(modelItem => item.OriginalUrl)">@Html.DisplayFor(modelItem => item.OriginalUrl)</a>
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.CountJump)</td>
+            <td style="border: none">
+                <button type="button" class="btn btn-danger" id="delete-button" value="@item.Id" onclick="deleteRecord()" asp-action="GetAllRecords">Delete</button>
+            </td>
+
+        </tr>
+    }
+</table>
+</body>
+</html>
+
+
+<script>
+function counterJump(id){
+    fetch(`https://localhost:44330/counter-increment?id=${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.redirectingUrl);
+            window.location.href = data.value.redirectingUrl;
+        })
+        .catch(error => {
+            console.error('WARNING!!', error);
+        });  
+}
+
+function deleteRecord(){
+    let id = document.getElementById("delete-button");
+    fetch(`https://localhost:44330/delete-record?id=${id.value}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (response.ok){
+            console.log("ok")
+        }
+    });   
+}
+    
+</script>

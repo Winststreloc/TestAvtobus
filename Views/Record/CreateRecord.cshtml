@@ -1,0 +1,69 @@
+﻿@model RecordURL
+
+<body>
+<form id="shorter-form" class="form" >
+    <div class="input-group mb-3">
+        <select class="custom-select" id="protocol">
+            <option value="http://">http://</option>
+            <option value="https://">https://</option>
+        </select>
+        <input type="text" class="form-control" placeholder="test" id="link"/>
+        <div class="input-group-append">
+            <button id="generate-button" class="btn btn-outline-secondary" type="button" onclick="generateLink()">Generate</button>
+        </div>
+    </div>
+    <span class="input-group-text" id="generated-link">new shor link</span>
+    <button id="insert-button" type="button" class="btn btn-success" onclick="insertLink()" disabled="disabled">Add</button>
+</form>
+
+</body>
+
+<script>
+
+function generateLink(){
+
+    let protocol = document.getElementById("protocol");
+    let link = document.getElementById("link");
+    if (link.value !== ''){
+     
+    fetch(`https://localhost:44330/generate-shorter-link?shortUrl=${protocol.value + link.value}`, {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+})
+.then(response => response.json())
+.then(data => {
+   document.getElementById('generated-link').innerHTML = data; 
+   const insertButton = document.getElementById('insert-button');
+   insertButton.disabled = false;
+})
+}}
+
+function insertLink(){
+    let link = document.getElementById("link");
+    let generatedLink = document.getElementById("generated-link");
+    let protocol = document.getElementById("protocol")
+    
+    let formData = {
+        OriginalUrl: protocol.value + link.value, 
+        ShortUrl: generatedLink.innerText
+    }
+    
+    fetch(`https://localhost:44330/insert-record`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (response.ok){
+            console.log("ok")
+        }
+    })
+
+}
+</script>
