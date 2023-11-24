@@ -1,5 +1,4 @@
-using TestAvtobus;
-using TestAvtobus.Data;
+
 using TestAvtobus.Interfaces;
 using TestAvtobus.Models.NHibernate;
 using TestAvtobus.Repository;
@@ -13,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ILinkShortenerService, LinkShortenerService>();
 builder.Services.AddScoped<IRecordUrlRepository, RecordUrlRepository>();
 builder.Services.AddScoped<ICounterLinkService, CounterLinkService>();
-builder.Services.AddScoped<IDbInitializationService, DbInitializationService>();
+
 builder.Services.AddSingleton(NHibernateHelper.OpenSession());
 
 

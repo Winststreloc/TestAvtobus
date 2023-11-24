@@ -57,7 +57,8 @@ public class RecordController : Controller
         }
 
         _recordUrlRepository.InsertRecord(recordUrlDto);
-        return Ok();
+        
+        return StatusCode(201);
     }
     
     
